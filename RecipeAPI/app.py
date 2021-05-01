@@ -5,7 +5,7 @@ It contains the definition of routes and views for the application.
 
 from flask import Flask, render_template
 from flask_restful import Resource, Api
-import sqlite3
+import sqlalchemy
 
 app = Flask(__name__)
 api = Api(app)
