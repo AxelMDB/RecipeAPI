@@ -3,21 +3,28 @@ This script runs the application using a development server.
 It contains the definition of routes and views for the application.
 """
 
-from flask import Flask, render_template
-from flask_restful import Resource, Api
-import sqlalchemy
+from flask import Flask, render_template, request, jsonify
+import sqlite3
 
 app = Flask(__name__)
-api = Api(app)
 # Make the WSGI interface available at the top level so wfastcgi can get it.
 wsgi_app = app.wsgi_app
 
-class HelloWorld(Resource):
-    def get(self):
-        return {'hello': 'world'}
 
-api.add_resource(HelloWorld, '/')
+con = sqlite3.connect('recipes.db')
+cur = con.cursor()
 
+
+@app.route("/api/SearchByIngredients")
+def get():
+    ingredient_list = request.args.getlist("ing")
+    if not ingredient_list:
+        return "invalid request"
+    con = sqlite3.connect('recipes.db')
+    cur = con.cursor()
+    list = cur.execute("SELECT * FROM ingredients").fetchall()
+    return jsonify(list)
+    
 
 if __name__ == '__main__':
     import os
