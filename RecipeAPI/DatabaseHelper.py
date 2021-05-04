@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, ForeignKey, Text, create_engine, insert, select
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base
 
 
 Model = declarative_base()
@@ -9,26 +9,49 @@ engine = create_engine(db_name, echo=True)
 
 def main():
     Model.metadata.create_all(engine)
-    select_all_ingredients()
+
+
+#region Ingredient queries
+def select_ingredients_by_id(ids):
+    ingredient_list = []
+    sel = select(Ingredients.ingredient_name).where(Ingredients.id.in_(ids))
+    conn = engine.connect()
+    result = conn.execute(sel)
+    for row in result:
+        ingredient_list.append({'ingredient_name': row.ingredient_name})
+    print(ingredient_list)
+
+
+def select_ingredients_by_name(ingredient_name):
+    ingredient_list = []
+    sel = select(Ingredients.ingredient_name).where(Ingredients.ingredient_name.in_(ingredient_name))
+    conn = engine.connect()
+    result = conn.execute(sel)
+    for row in result:
+        ingredient_list.append({'ingredient_name': row.ingredient_name})
+    print(ingredient_list)
 
 
 def select_all_ingredients():
-    sel = select(Ingredients)
+    ingredient_list = []
+    sel = select(Ingredients.ingredient_name)
     conn = engine.connect()
     result = conn.execute(sel)
-    print(result.fetchall())
+    for row in result:
+        ingredient_list.append({'ingredient_name': row.ingredient_name})
+    print(ingredient_list)
 
 
 def insert_ingredients(ingredients):
-    engine = create_engine(db_name, echo=True)
+    conn = engine.connect()
     for i in range(len(ingredients)):
         ins = insert(Ingredients).values(ingredient_name=ingredients[i])
-        conn = engine.connect()
         result = conn.execute(ins)
         print(result.inserted_primary_key)
+#endregion
 
 
-def insert_procedures():
+def insert_recipes():
     RecipeExample = [
                         {
                             'recipe_name': 'arepa',
