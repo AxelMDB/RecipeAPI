@@ -9,47 +9,53 @@ engine = create_engine(db_name, echo=True)
 
 def main():
     Model.metadata.create_all(engine)
+    select_all(Ingredients)
 
+#region Generic
+def select_all(table):
+    tablekeys = table.__table__.columns.keys()
+    sel = select(table)
+    with engine.connect() as conn:
+        result = list(conn.execute(sel))
+        resultlist = [1] * len(result)
+        for i in range(len(result)):
+            resultlist[i] = {}
+            for key in range(len(result[i])):
+                resultlist[i][tablekeys[key]] = result[i][key]
+        print(resultlist)
+#endregion
 
 #region Ingredient queries
-def select_ingredients_by_id(ids):
-    ingredient_list = []
-    sel = select(Ingredients.ingredient_name).where(Ingredients.id.in_(ids))
-    conn = engine.connect()
-    result = conn.execute(sel)
-    for row in result:
-        ingredient_list.append({'ingredient_name': row.ingredient_name})
-    print(ingredient_list)
-
-
 def select_ingredients_by_name(ingredient_name):
     ingredient_list = []
-    sel = select(Ingredients.ingredient_name).where(Ingredients.ingredient_name.in_(ingredient_name))
-    conn = engine.connect()
-    result = conn.execute(sel)
-    for row in result:
-        ingredient_list.append({'ingredient_name': row.ingredient_name})
+    sel = select(Ingredients).where(Ingredients.ingredient_name.in_(ingredient_name))
+    with engine.connect() as conn:
+        result = conn.execute(sel)
+        for row in result:
+            ingredient_list.append({'ingredient_name': row.ingredient_name})
     print(ingredient_list)
 
 
 def select_all_ingredients():
     ingredient_list = []
-    sel = select(Ingredients.ingredient_name)
-    conn = engine.connect()
-    result = conn.execute(sel)
-    for row in result:
-        ingredient_list.append({'ingredient_name': row.ingredient_name})
+    sel = select(Ingredients)
+    with engine.connect() as conn:
+        result = conn.execute(sel)
+        for row in result:
+            ingredient_list.append({'ingredient_name': row.ingredient_name})
     print(ingredient_list)
 
 
 def insert_ingredients(ingredients):
-    conn = engine.connect()
-    for i in range(len(ingredients)):
-        ins = insert(Ingredients).values(ingredient_name=ingredients[i])
-        result = conn.execute(ins)
-        print(result.inserted_primary_key)
+    with engine.connect() as conn:
+        for i in range(len(ingredients)):
+            ins = insert(Ingredients).values(ingredient_name=ingredients[i])
+            result = conn.execute(ins)
+    print(result.inserted_primary_key)
 #endregion
 
+#region Measures
+#endregion
 
 def insert_recipes():
     RecipeExample = [
@@ -77,7 +83,7 @@ def insert_recipes():
                         } 
                     ]
 
-
+#region Models
 class Ingredients(Model):
     __tablename__ = 'ingredients'
     __table_args__ = {'extend_existing': True}
@@ -108,7 +114,7 @@ class RecipeIndex(Model):
     ingredient_id = Column(Integer, ForeignKey('ingredients.id'))
     quantity = Column(Text)
     measure_id = Column(Integer, ForeignKey('measures.id'))
-
+#endregion
 
 if __name__ == '__main__':
     main()
