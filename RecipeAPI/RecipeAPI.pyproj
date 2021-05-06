@@ -33,7 +33,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="recipes.db" />
     <Content Include="requirements.txt" />
     <Content Include="templates\index.html" />
   </ItemGroup>
