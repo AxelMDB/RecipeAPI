@@ -8,7 +8,7 @@ engine = create_engine(db_name, echo=True)
 
 recipe_example = [
     {
-        'recipe_name': 'arepa', 
+        'name': 'arepa', 
         'ingredients': [
             {
                 'ingredient': 'cornflour',
@@ -28,15 +28,12 @@ recipe_example = [
         ],
         'procedure': [
             {
-                'step': 1,
                 'text': 'something'
             },
             {
-                'step': 2,
                 'text': 'something'
             },
             {
-                'step': 3,
                 'text': 'something'
             }
         ]
@@ -46,33 +43,36 @@ recipe_example = [
 
 def dbtests():
     Model.metadata.create_all(engine)
-    insert_jsonlike_recipe(recipe_example)
-    select_all(Recipes)
+    insert_jsonlike_recipes(recipe_example)
+    select_all(RecipeNames)
     select_all(Ingredients)
     select_all(Procedures)
+    select_all(Units)
+    select_all(Quantities)
 
 
-def to_list(table: Model, result: list, getid = False):
-    '''take a sqlalchemy.result list and convert into a list of dictionaries'''
+def result_to_list(table: Model, result, getid = False):
+    '''take a sqlalchemy.result and convert into a list of dictionaries'''
     # check if list is empty
+    result = list(result)
     if not result:
         return None
     # get the column names (keys) from the table
     tablekeys = table.__table__.columns.keys()
     # initialize empty list to save the dict with length of result
-    resultlist = [None] * len(result)
+    l = []
     # for each row in result
     for i in range(len(result)):
-        # value of resultlist[i] is None, initialize to dict
-        resultlist[i] = {}
+        d = {}
         # for comma-separated value inside tuple result[i]
         for key in range(len(result[i])):
             # check if should return ids (default is false)
             if getid and tablekeys[key] == 'id':
-                resultlist[i][tablekeys[key]] = result[i][key]
+                d[tablekeys[key]] = result[i][key]
             elif tablekeys[key] != 'id':
-                resultlist[i][tablekeys[key]] = result[i][key]
-    return resultlist
+                d[tablekeys[key]] = result[i][key]
+        l.append(d)
+    return l
 
 
 #region Generic
@@ -80,8 +80,8 @@ def select_all(table, getid = False):
     '''select all registers in a table'''
     sel = select(table)
     with engine.connect() as conn:
-        result = list(conn.execute(sel))
-        resultlist = to_list(table, result, getid)
+        result = conn.execute(sel)
+        resultlist = result_to_list(table, result, getid)
         print(resultlist)
     return resultlist
 
@@ -90,8 +90,8 @@ def select_by_ids(table: Model, ids: list, getid = False):
     '''select all registers in a table that matches a list of ids'''
     sel = select(table).where(table.id.in_(ids))
     with engine.connect() as conn:
-        result = list(conn.execute(sel))
-        resultlist = to_list(table, result, getid)
+        result = conn.execute(sel)
+        resultlist = result_to_list(table, result, getid)
         print(resultlist)
     return resultlist
 
@@ -136,60 +136,116 @@ def select_ingredients_by_names(ingredients: list, getid = False):
     sel = select(table).where(table.ingredient.in_(ingredients))
     with engine.connect() as conn:
         result = list(conn.execute(sel))
-        resultlist = to_list(table, result, getid)
+        resultlist = result_to_list(table, result, getid)
         print(resultlist)
     return resultlist   
         
 
 def select_recipes_by_names(recipes: list, getid = False):
     '''select recipes in the Recipes table that match up with a list of recipes'''
-    table = Recipes
-    sel = select(table).where(table.recipe_name.in_(recipes))
+    table = RecipeNames
+    sel = select(table).where(table.name.in_(recipes))
     with engine.connect() as conn:
         result = list(conn.execute(sel))
-        resultlist = to_list(table, result, getid)
+        resultlist = result_to_list(table, result, getid)
+        print(resultlist)
+    return resultlist
+
+
+def select_units_by_names(units: list, getid = False):
+    '''select recipes in the Recipes table that match up with a list of recipes'''
+    table = Units
+    sel = select(table).where(table.unit.in_(units))
+    with engine.connect() as conn:
+        result = list(conn.execute(sel))
+        resultlist = result_to_list(table, result, getid)
         print(resultlist)
     return resultlist     
 #endregion
 
 
-#region Recipe query
-def insert_jsonlike_recipe(recipe):
+#region Recipe queries
+def insert_jsonlike_recipes(recipes):
     '''insert JSON-like objects of recipes with ingredients and procedures'''
-    for r in range(len(recipe)):
+    for r in range(len(recipes)):
+        # RECIPE NAME
+        # get the name of the current recipe
+        recipe_name = recipes[r]['name']
+        all_recipes = select_all(RecipeNames)
+        # insert into the Recipes table if not in the database, return error otherwise
+        if all_recipes != None:
+            if not any(d['name'] == recipe_name for d in all_recipes):
+                recipe_id = insert_into(RecipeNames, [{'name': recipe_name}])[0]
+            else:
+                return {'error': 'some recipe with that name already exists in the database'}
+        else:
+            recipe_id = insert_into(RecipeNames, [{'name': recipe_name}])[0]
+        # INGREDIENTS
         # get all the ingredients
         all_ingredients = select_all(Ingredients)
-        # get the name of the current recipe
-        recipe_name = recipe[r]['recipe_name']
-        # insert into the Recipes table
-        recipe_id = insert_into(Recipes, [{'recipe_name': recipe_name}])[0]
         # number of ingredients
-        ing_length = len(recipe[r]['ingredients'])
-        ings_to_insert = [None] * ing_length
+        ings_length = len(recipes[r]['ingredients'])
+        ings_to_insert = []
         ing_list = []
-        for i in range(ing_length):
+        for i in range(ings_length):
             # get current ingredient
-            ingredient = recipe[r]['ingredients'][i]['ingredient']
-            ing_list.append(ingredient)
-            ings_to_insert[i] = {}
-            # check if there are ingredients in the table
+            ing = recipes[r]['ingredients'][i]['ingredient']
+            if ing not in ing_list:
+                ing_list.append(ing)
+            # check if ingredient in the database
+        for ingredient in ing_list:
+            ing_dict = None
             if all_ingredients != None:
                 if not any(d['ingredient'] == ingredient for d in all_ingredients):
-                    ings_to_insert[i]['ingredient'] = ingredient
+                    ing_dict = {'ingredient': ingredient}
             else:
-                ings_to_insert[i]['ingredient'] = ingredient
+                ing_dict = {'ingredient': ingredient}
+            if ing_dict != None:
+                ings_to_insert.append(ing_dict)
         insert_into(Ingredients, ings_to_insert)
-        # get the ids of the ingredients just inserted
-        ing_ids = []
-        for row in select_ingredients_by_names(ing_list, True):
-            ing_ids.append(row['id'])
+        # UNITS
+        units_to_insert = []
+        # get all units
+        all_units = select_all(Units)
+        unit_list = []
+        for i in range(ings_length):
+            unit = recipes[r]['ingredients'][i]['unit']
+            if unit not in unit_list:
+                unit_list.append(unit)
+        for u in unit_list:
+            unit_dict = None
+            if all_units != None:
+                if not any(d['unit'] == u for d in all_units):
+                    unit_dict = {'unit': u}
+            else:
+                unit_dict = {'unit': u}
+            if unit_dict != None:
+                units_to_insert.append(unit_dict)
+        insert_into(Units, units_to_insert)
+        # QUANTITIES
+        quantities_to_insert = []
+        for i in range(ings_length):
+            ing = recipes[r]['ingredients'][i]['ingredient']
+            ing_id = select_ingredients_by_names([ing], True)[0]['id']
+            quantity = recipes[r]['ingredients'][i]['quantity']
+            unit = recipes[r]['ingredients'][i]['unit']
+            unit_id = select_units_by_names([unit], True)[0]['id']
+            quant_dict = {
+                'quantity': quantity,
+                'unit_id': unit_id,
+                'recipe_id': recipe_id,
+                'ingredient_id': ing_id
+            }
+            quantities_to_insert.append(quant_dict)
+        insert_into(Quantities, quantities_to_insert)
+        # STEPS
         # number of procedure steps
-        proc_length = len(recipe[r]['procedure'])
-        steps_to_insert = [None] * proc_length
+        proc_length = len(recipes[r]['procedure'])
+        steps_to_insert = []
         for p in range(proc_length):
-            steps_to_insert[p] = {}
-            step = recipe[r]['procedure'][p]
-            steps_to_insert[p] = {'recipe_id' : recipe_id,'step': step['step'], 'text': step['text']}
+            step = recipes[r]['procedure'][p]
+            step_dict = {'recipe_id' : recipe_id,'step': p + 1, 'text': step['text']}
+            steps_to_insert.append(step_dict)
         insert_into(Procedures, steps_to_insert)
 #endregion
 
@@ -199,40 +255,40 @@ class Ingredients(Model):
     __tablename__ = 'ingredients'
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True, autoincrement=True)
-    ingredient = Column(Text)
+    ingredient = Column(Text, unique=True)
 
 
-class Measures(Model):
-    __tablename__ = 'measures'
+class Units(Model):
+    __tablename__ = 'units'
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True, autoincrement=True)
-    unit = Column(Text)
+    unit = Column(Text, unique=True)
 
 
-class Recipes(Model):
-    __tablename__ = 'recipes'
+class RecipeNames(Model):
+    __tablename__ = 'recipe_names'
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True, autoincrement=True)
-    recipe_name = Column(Text)
+    name = Column(Text, unique=True)
     
 
 class Procedures(Model):
     __tablename__ = 'procedures'
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True, autoincrement=True)
-    recipe_id = Column(Integer, ForeignKey('recipes.id'))
+    recipe_id = Column(Integer, ForeignKey('recipe_names.id'))
     step = Column(Integer)
     text = Column(Text)
 
 
-class RecipeIndex(Model):
-    __tablename__ = 'recipe_index'
+class Quantities(Model):
+    __tablename__ = 'quantities'
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True,autoincrement=True)
-    recipe_id = Column(Integer, ForeignKey('recipes.id'))
-    ingredient_id = Column(Integer, ForeignKey('ingredients.id'))
     quantity = Column(Text)
-    measure_id = Column(Integer, ForeignKey('measures.id'))
+    unit_id = Column(Integer, ForeignKey('units.id'))
+    recipe_id = Column(Integer, ForeignKey('recipe_names.id'))
+    ingredient_id = Column(Integer, ForeignKey('ingredients.id'))
 #endregion
 
 
