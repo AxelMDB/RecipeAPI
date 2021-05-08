@@ -11,19 +11,9 @@ app = Flask(__name__)
 wsgi_app = app.wsgi_app
 
 
-con = sqlite3.connect('recipes.db')
-cur = con.cursor()
-
-
 @app.route("/api/SearchByIngredients")
 def get():
-    ingredient_list = request.args.getlist("ing")
-    if not ingredient_list:
-        return "invalid request"
-    con = sqlite3.connect('recipes.db')
-    cur = con.cursor()
-    list = cur.execute("SELECT * FROM ingredients").fetchall()
-    return jsonify(list)
+    return Hello
     
 
 if __name__ == '__main__':
