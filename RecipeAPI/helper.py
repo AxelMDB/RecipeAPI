@@ -44,11 +44,7 @@ recipe_example = [
 def dbtests():
     Model.metadata.create_all(engine)
     insert_jsonlike_recipes(recipe_example)
-    select_all(Ingredients)
-    select_all(Units)
-    select_all(RecipeNames)
-    select_all(Procedures)
-    select_all(Quantities)
+    select_fullrecipes_by_names(['arepa'])
 
 
 def result_to_list(table: Model, result):
@@ -79,6 +75,16 @@ def select_all(table):
         resultlist = result_to_list(table, result)
         print(resultlist)
     return resultlist
+
+
+def select_fullrecipes_by_names(names: list):
+    table = RecipeNames
+    for name in names:
+        selectname = select(table.id, table.name).where(table.name==name)
+        with engine.connect() as conn:
+            result = conn.execute(selectname)
+            resultlist = result_to_list(table, result)
+            print(resultlist)
 
 
 def select_by_ids(table: Model, ids: list):
