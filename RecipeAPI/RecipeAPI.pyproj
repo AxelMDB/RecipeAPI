@@ -6,7 +6,7 @@
     <ProjectGuid>3a9352d7-e0a2-43e6-accb-4833ad8f8f30</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <ProjectTypeGuids>{789894c7-04a9-4a11-a6b5-3f4435165112};{1b580a1a-fdb3-4b32-83e1-6407eb2722e6};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
-    <StartupFile>helper.py</StartupFile>
+    <StartupFile>DatabaseService\DatabaseHelper.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -28,7 +28,43 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
-    <Compile Include="helper.py">
+    <Compile Include="DatabaseService\DatabaseHelper.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DatabaseService\DeclarativeBase.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dtos\Procedure.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dtos\Ingredient.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dtos\Recipe.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Ingredients.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Quantities.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Units.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\RecipeName.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Procedures.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DatabaseService\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dtos\__init__.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -48,6 +84,9 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="DatabaseService\" />
+    <Folder Include="Dtos\" />
     <Folder Include="templates\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />
