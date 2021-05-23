@@ -1,3 +1,4 @@
-from .Ingredient import Ingredient
-from .Procedure import Procedure
-from .Recipe import Recipe
+from .ingredient import Ingredient
+from .procedure import Procedure
+from .recipe import Recipe
+from .recipes import Recipes

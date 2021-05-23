@@ -1,4 +1,5 @@
-class Procedure(object):
+class Recipes(object):
     """description of class"""
     def __init__(self):
-        self.text = ""
+        self.recipes = []
+

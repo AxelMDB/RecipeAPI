@@ -1,6 +1,7 @@
-class Ingredient:
+class Ingredient(object):
     """description of class"""
-    ingredient = ""
-    quantity = ""
-    unit = ""
+    def __init__(self):
+        self.ingredient = ""
+        self.quantity = ""
+        self.unit = ""
 
