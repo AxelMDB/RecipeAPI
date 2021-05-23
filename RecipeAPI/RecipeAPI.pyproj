@@ -6,7 +6,7 @@
     <ProjectGuid>3a9352d7-e0a2-43e6-accb-4833ad8f8f30</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <ProjectTypeGuids>{789894c7-04a9-4a11-a6b5-3f4435165112};{1b580a1a-fdb3-4b32-83e1-6407eb2722e6};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
-    <StartupFile>DatabaseService\DatabaseHelper.py</StartupFile>
+    <StartupFile>app.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -17,6 +17,7 @@
     <Name>RecipeAPI</Name>
     <RootNamespace>RecipeAPI</RootNamespace>
     <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <SuppressPackageInstallationPrompt>True</SuppressPackageInstallationPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,28 +35,31 @@
     <Compile Include="DatabaseService\DeclarativeBase.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Dtos\Procedure.py">
+    <Compile Include="Dtos\recipes.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Dtos\Ingredient.py">
+    <Compile Include="Dtos\procedure.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Dtos\Recipe.py">
+    <Compile Include="Dtos\ingredient.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\Ingredients.py">
+    <Compile Include="Dtos\recipe.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\Quantities.py">
+    <Compile Include="Models\ingredients.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\Units.py">
+    <Compile Include="Models\quantities.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\RecipeName.py">
+    <Compile Include="Models\units.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\Procedures.py">
+    <Compile Include="Models\recipe_name.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\procedures.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DatabaseService\__init__.py">

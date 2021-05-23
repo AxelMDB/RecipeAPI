@@ -1,11 +1,9 @@
-from .Ingredient import Ingredient
-from .Procedure import Procedure
-
-class Recipe:
+class Recipe(object):
     """description of class"""
-    name = ""
-    ingredients = [] 
-    procedure = []
+    def __init__(self):
+        self.name = ""
+        self.ingredients = [] 
+        self.procedure = []
 
 
 
