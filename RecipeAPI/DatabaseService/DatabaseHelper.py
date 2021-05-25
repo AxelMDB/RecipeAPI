@@ -36,27 +36,9 @@ class helper:
     def get_ingredients_by_names(self, names: list):
         return self.session.query(Ingredients).filter(Ingredients.ingredient.in_(names))
 
-  
-    def MockRecipes(self):
-        AllRecipes = Recipes()
-        recipe = Recipe()
-        recipe.name += "arepa"
-        for i in range(3):
-            procedure = Procedure()
-            procedure.text += "hello"
-            recipe.procedure.append(procedure)
-        for i in range(3):
-            ingredient = Ingredient()
-            ingredient.ingredient += "cornflour"
-            ingredient.unit += "cup"
-            ingredient.quantity += "2 1/2"
-            recipe.ingredients.append(ingredient)
-        AllRecipes.recipes.append(recipe)
-        return AllRecipes
 
-
-    def insert_recipes(self, Recipes: object):
-        recipes = Recipes.recipes
+    def insert_recipes(self, recipes: Recipes):
+        recipes = recipes.recipes
         for recipe in recipes:
             name = RecipeName()
             name.name = recipe.name.lower()
@@ -95,7 +77,7 @@ class helper:
                 Quantity.unit_id = AllUnits[i].id
                 quantities.append(Quantity)
             self.AddOrUpdateAll(quantities)
-
+            return True
 
     def get_recipes_by_names(self, names: list):
         RecipesObj = Recipes()
@@ -126,22 +108,6 @@ class helper:
             RecipesObj.recipes.append(RecipeObj)
         return self.serialize_recipes(RecipesObj)
 
-
-    def serialize_recipes(self, recipes):
-        list = []
-        for recipe in recipes.recipes:
-            dict = {
-                "name": None,
-                "ingredients": [],
-                "procedure": []
-                }
-            dict["name"] = recipe.name
-            for ingredient in recipe.ingredients:
-                dict["ingredients"].append(ingredient.__dict__)
-            for procedure in recipe.procedure:
-                dict["procedure"].append(procedure.__dict__)
-            list.append(dict)
-        return list
 
 
 if __name__ == '__main__':

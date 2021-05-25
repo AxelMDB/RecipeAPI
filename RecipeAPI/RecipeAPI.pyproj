@@ -47,19 +47,19 @@
     <Compile Include="Dtos\recipe.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\ingredients.py">
+    <Compile Include="Models\IngredientsModel.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\quantities.py">
+    <Compile Include="Models\QuantitiesModel.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\units.py">
+    <Compile Include="Models\UnitsModel.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\recipe_name.py">
+    <Compile Include="Models\RecipeNameModel.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\procedures.py">
+    <Compile Include="Models\ProceduresModel.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DatabaseService\__init__.py">
@@ -69,6 +69,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Dtos\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mocks\MockRecipes.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mocks\__init__.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -91,6 +97,7 @@
     <Folder Include="Models\" />
     <Folder Include="DatabaseService\" />
     <Folder Include="Dtos\" />
+    <Folder Include="Mocks\" />
     <Folder Include="templates\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />
