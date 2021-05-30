@@ -3,11 +3,11 @@ This script runs the application using a development server.
 It contains the definition of routes and views for the application.
 """
 from flask import Flask, render_template, request, jsonify, Response
-from DatabaseService import DatabaseHelper as DH
+from DatabaseService.helper import SessionHelper
 import jsons
 import requests
 from Dtos import *
-from Mocks.MockRecipes import MockRecipes
+
 
 app = Flask(__name__)
 # Make the WSGI interface available at the top level so wfastcgi can get it.
@@ -16,20 +16,26 @@ wsgi_app = app.wsgi_app
 
 @app.route("/")
 def get():
-    print(request.base_url)
-    r = requests.post(request.base_url + "postrecipe", json=jsons.dump(MockRecipes()))
-    return r.json()
+    return "Hello"
 
 
 @app.route("/postrecipe", methods = ["POST"])
 def post():
     if request.is_json:
-        recipes = jsons.load(request.json, Recipes)
-        helper = DH.helper()
-        insert_recipe_result = helper.insert_recipes(recipes)
+        try:
+            recipe = jsons.load(request.json, Recipe)
+        except:
+            result = {'result': 'bad request'}
+            return jsonify(result), 400
+        helper = SessionHelper()
+        insert_recipe_result = helper.insert_recipe(recipe)
+        helper.close_session()
         if insert_recipe_result:
-            result = {'result': 'recipe(s) added successfully'}
+            result = {'result': 'recipe added successfully'}
             return jsonify(result), 201
+        else:
+            result = {'result': 'error adding recipe'}
+            return jsonify(result), 400
 
 
 if __name__ == '__main__':
