@@ -2,10 +2,8 @@ from DatabaseService.DeclarativeBase import Base as Model
 from sqlalchemy import Column, Integer, ForeignKey, Text
 
 
-class Procedures(Model):
-    __tablename__ = 'procedures'
+class Cultures(Model):
+    __tablename__ = 'culture'
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True, autoincrement=True)
-    recipe_id = Column(Integer, ForeignKey('recipe_info.id'))
-    step = Column(Integer)
-    text = Column(Text)
+    culture = Column(Text, unique=True)

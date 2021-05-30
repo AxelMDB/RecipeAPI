@@ -7,6 +7,6 @@ class Quantities(Model):
     id = Column(Integer, primary_key=True,autoincrement=True)
     quantity = Column(Text)
     unit_id = Column(Integer, ForeignKey('units.id'))
-    recipe_id = Column(Integer, ForeignKey('recipe_names.id'))
+    recipe_id = Column(Integer, ForeignKey('recipe_info.id'))
     ingredient_id = Column(Integer, ForeignKey('ingredients.id'))
 

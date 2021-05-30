@@ -1,4 +1,4 @@
-from .recipe import Recipe
+from .singlerecipe import Recipe
 from typing import List
 
 
