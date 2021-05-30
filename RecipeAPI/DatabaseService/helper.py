@@ -7,7 +7,7 @@ from Mocks.MockRecipe import MockRecipe
 
 
 class SessionHelper:
-    def __init__(self):
+    def start_session(self):
         self.db_name = "sqlite:///:memory:"
         self.engine = create_engine(self.db_name, echo=True)
         Base.metadata.create_all(self.engine)
@@ -50,7 +50,8 @@ class SessionHelper:
 
 
     def insert_recipe(self, recipe: Recipe):
-        info = RecipeInfo()
+        self.start_session()
+        info = RecipeInfoModel()
         info.recipe_name = recipe.recipe_name.lower()
         info.recipe_desc = recipe.recipe_desc
         culture = self.get_culture_by_name(recipe.recipe_culture)
@@ -61,7 +62,7 @@ class SessionHelper:
             return False
         AllQuantities = []
         for ingredient in ingredient_list:
-            Quantity = Quantities()
+            Quantity = QuantitiesModel()
             Quantity.quantity = ingredient.quantity
             unit = self.get_unit_by_name(ingredient.unit)
             if unit == None:
@@ -75,44 +76,46 @@ class SessionHelper:
             AllQuantities.append(Quantity)
         AllProcedures = []
         for i in range(len(recipe.procedure)):
-            Procedure = Procedures()
+            Procedure = ProceduresModel()
             Procedure.text = recipe.procedure[i].text
             Procedure.recipe_id = info.id
             Procedure.step = i + 1
             AllProcedures.append(Procedure)
         if self.AddOrUpdateAll(AllQuantities) and self.AddOrUpdateAll(AllProcedures):
+            self.session_close()
             return True
 
 
     def get_recipes_by_names(self, names: list):
-        Recipes = Recipes()
-        recipes = self.session.query(RecipeInfo).filter(RecipeInfo.name.in_(names))
+        self.start_session()
+        Recipes = RecipesDto()
+        recipes = self.session.query(RecipeInfoModel).filter(RecipeInfoModel.name.in_(names))
         for recipe in recipes:
-            Recipe = Recipe()
+            Recipe = RecipeDto()
             Recipe.recipe_name = recipe.recipe_name
             Recipe.recipe_desc = recipe.recipe_desc
-            Recipe.recipe_culture = self.session.query(Cultures.culture).filter(Cultures.id == recipe.culture_id)
+            Recipe.recipe_culture = self.session.query(CulturesModel.culture).filter(CulturesModel.id == recipe.culture_id)
             result = self.session.query(
-                Ingredients.ingredient, Units.unit, Procedures.text,
-                Quantities.quantity, Quantities.recipe_id).\
-                    filter(Quantities.recipe_id == recipe.id).\
-                    filter(Ingredients.id == Quantities.ingredient_id).\
-                    filter(Units.id == Quantities.unit_id).\
-                    filter(Procedures.recipe_id == RecipeName.id).\
-                    group_by(Quantities.id)
+                IngredientsModel.ingredient, UnitsModel.unit, ProceduresModel.text,
+                QuantitiesModel.quantity, QuantitiesModel.recipe_id).\
+                    filter(QuantitiesModel.recipe_id == recipe.id).\
+                    filter(IngredientsModel.id == QuantitiesModel.ingredient_id).\
+                    filter(UnitsModel.id == QuantitiesModel.unit_id).\
+                    filter(ProceduresModel.recipe_id == RecipeName.id).\
+                    group_by(QuantitiesModel.id)
             for row in result:
-                ingredient = RecipeIngredient()
+                ingredient = RecipeIngredientDto()
                 ingredient.ingredient += row.ingredient
                 ingredient.quantity += row.quantity
                 ingredient.unit += row.unit
                 Recipe.ingredient_list.append(ingredient)
-                procedure = RecipeProcedure()
+                procedure = RecipeProcedureDto()
                 procedure.text += row.text
                 Recipe.procedure_list.append(procedure)
             Recipes.recipes.append(Recipe)
-
+        self.close_session()
+        return Recipes
 
 if __name__ == "__main__":
-    helper = SessionHelper()
     mockrecipe = MockRecipe()
     helper.insert_recipe(mockrecipe)

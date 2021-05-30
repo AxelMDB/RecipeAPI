@@ -6,7 +6,7 @@
     <ProjectGuid>3a9352d7-e0a2-43e6-accb-4833ad8f8f30</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <ProjectTypeGuids>{789894c7-04a9-4a11-a6b5-3f4435165112};{1b580a1a-fdb3-4b32-83e1-6407eb2722e6};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
-    <StartupFile>DatabaseService\helper.py</StartupFile>
+    <StartupFile>app.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -35,6 +35,24 @@
     <Compile Include="DatabaseService\DeclarativeBase.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Dtos\units.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dtos\ingredients.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dtos\cultures.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dtos\culture.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dtos\ingredient.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dtos\unit.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Dtos\recipes.py">
       <SubType>Code</SubType>
     </Compile>
@@ -44,25 +62,25 @@
     <Compile Include="Dtos\recipe_ingredient.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Dtos\singlerecipe.py">
+    <Compile Include="Dtos\recipe.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\CulturesModel.py">
+    <Compile Include="Models\cultures_model.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\IngredientsModel.py">
+    <Compile Include="Models\ingredients_model.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\QuantitiesModel.py">
+    <Compile Include="Models\quantities_model.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\UnitsModel.py">
+    <Compile Include="Models\units_model.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\RecipeInfoModel.py">
+    <Compile Include="Models\recipeinfo_model.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\ProceduresModel.py">
+    <Compile Include="Models\procedures_model.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DatabaseService\__init__.py">
