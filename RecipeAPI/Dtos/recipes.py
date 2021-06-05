@@ -1,9 +1,9 @@
-from .singlerecipe import Recipe
+from .recipe import RecipeDto
 from typing import List
 
 
-class Recipes(object):
+class RecipesDto(object):
     """description of class"""
-    def __init__(self, recipes: List[Recipe] = []):
+    def __init__(self, recipes: List[RecipeDto] = []):
         self.recipes = recipes
 

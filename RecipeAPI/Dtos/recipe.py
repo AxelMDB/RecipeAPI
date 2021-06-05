@@ -1,12 +1,12 @@
-from .recipe_ingredient import RecipeIngredient
-from .recipe_procedure import RecipeProcedure
+from .recipe_ingredient import RecipeIngredientDto
+from .recipe_procedure import RecipeProcedureDto
 from typing import List
 
 
-class Recipe(object):
+class RecipeDto(object):
     """description of class"""
     def __init__(self, recipe_name: str = "", recipe_desc: str = "", recipe_culture: str = "",
-                 ingredient_list: List[RecipeIngredient] = [], procedure_list: List[RecipeProcedure] = []):
+                 ingredient_list: List[RecipeIngredientDto] = [], procedure_list: List[RecipeProcedureDto] = []):
         self.recipe_name = recipe_name
         self.recipe_desc = recipe_desc
         self.recipe_culture = recipe_culture

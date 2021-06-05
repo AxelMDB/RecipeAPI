@@ -3,39 +3,48 @@ This script runs the application using a development server.
 It contains the definition of routes and views for the application.
 """
 from flask import Flask, render_template, request, jsonify, Response
-from DatabaseService.helper import SessionHelper
+from flask_restful import Resource, Api
 import jsons
-import requests
 from Dtos import *
+from Mocks.mock_unit import MockUnit
+import DatabaseService.api_helper as helper
 
 
 app = Flask(__name__)
-# Make the WSGI interface available at the top level so wfastcgi can get it.
+api = Api(app)
 wsgi_app = app.wsgi_app
 
 
-@app.route("/")
-def get():
-    return "Hello"
+class UnitsAPI(Resource):
+    """TODO"""
+    def get(self):
+        AllUnits = helper.GetAllUnits()
+        return jsons.dump(AllUnits)
 
+    def post(self):
+        if request.is_json:
+            try:
+                Unit = jsons.load(request.get_json(), UnitDto)
+            except Exception as e:
+                print(e)
+                return "error", 400
+            if helper.AddUnit(Unit):
+                return "success", 201
+            else:
+                return "error", 400
+        return "error", 400
 
-@app.route("/postrecipe", methods = ["POST"])
-def post():
-    if request.is_json:
-        try:
-            recipe = jsons.load(request.json, Recipe)
-        except:
-            result = {'result': 'bad request'}
-            return jsonify(result), 400
-        helper = SessionHelper()
-        insert_recipe_result = helper.insert_recipe(recipe)
-        helper.close_session()
-        if insert_recipe_result:
-            result = {'result': 'recipe added successfully'}
-            return jsonify(result), 201
+api.add_resource(UnitsAPI, "/Units")
+
+class UnitByIdAPI(Resource):
+    def get(self, unit_id):
+        Unit = helper.GetUnitById(unit_id)
+        if Unit is not None:
+            return jsons.dump(Unit)
         else:
-            result = {'result': 'error adding recipe'}
-            return jsonify(result), 400
+            return "error"
+
+api.add_resource(UnitByIdAPI, "/Units/<int:unit_id>")
 
 
 if __name__ == '__main__':
