@@ -29,10 +29,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
-    <Compile Include="DatabaseService\helper.py">
+    <Compile Include="DatabaseService\api_helper.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DatabaseService\sql_commands.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DatabaseService\DeclarativeBase.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dtos\equivalence.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Dtos\units.py">
@@ -65,6 +71,9 @@
     <Compile Include="Dtos\recipe.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Mocks\mock_unit.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Models\cultures_model.py">
       <SubType>Code</SubType>
     </Compile>
@@ -74,6 +83,7 @@
     <Compile Include="Models\quantities_model.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\equivalences_model.py" />
     <Compile Include="Models\units_model.py">
       <SubType>Code</SubType>
     </Compile>
@@ -90,9 +100,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Dtos\__init__.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mocks\MockRecipe.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Mocks\__init__.py">

@@ -7,5 +7,3 @@ class UnitsModel(Model):
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True, autoincrement=True)
     unit = Column(Text, unique=True)
-    equivalent_unit = Column(Integer)
-    conversion = Column(Integer)
