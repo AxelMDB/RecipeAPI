@@ -109,14 +109,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
-    <Content Include="templates\index.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="DatabaseService\" />
     <Folder Include="Dtos\" />
     <Folder Include="Mocks\" />
-    <Folder Include="templates\" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">

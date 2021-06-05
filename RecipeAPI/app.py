@@ -2,18 +2,16 @@
 This script runs the application using a development server.
 It contains the definition of routes and views for the application.
 """
-from flask import Flask, render_template, request, jsonify, Response
+from flask import Flask, request
 from flask_restful import Resource, Api
 import jsons
-from Dtos import *
-from Mocks.mock_unit import MockUnit
+import Dtos
 import DatabaseService.api_helper as helper
 
 
 app = Flask(__name__)
 api = Api(app)
 wsgi_app = app.wsgi_app
-
 
 class UnitsAPI(Resource):
     """TODO"""
@@ -24,7 +22,7 @@ class UnitsAPI(Resource):
     def post(self):
         if request.is_json:
             try:
-                Unit = jsons.load(request.get_json(), UnitDto)
+                Unit = jsons.load(request.get_json(), Dtos.UnitDto)
             except Exception as e:
                 print(e)
                 return "error", 400
