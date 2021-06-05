@@ -339,3 +339,4 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /RecipeAPI/Resultados-Depurar.txt
+/RecipeAPI/env
