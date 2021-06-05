@@ -23,7 +23,7 @@ def GetAllUnits():
     Units = Dtos.UnitsDto(units = [])
     Session = sql.start_database()
     with Session() as session:
-        for row in sql.GetAll(UnitsModel, session):
+        for row in sql.GetAll(Models.UnitsModel, session):
             Unit = Dtos.UnitDto()
             Unit.unit = row.unit
             Units.units.append(Unit)
