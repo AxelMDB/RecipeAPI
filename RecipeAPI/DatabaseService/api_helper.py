@@ -1,11 +1,11 @@
-from Dtos import *
-from Models import *
+import Dtos
+import Models
 from sqlalchemy import exc
 import DatabaseService.sql_commands as sql
 
 
-def AddUnit(unit: UnitDto):
-    Unit = UnitsModel()
+def AddUnit(unit: Dtos.UnitDto):
+    Unit = Models.UnitsModel()
     Unit.unit = unit.unit
     Session = sql.start_database()
     with Session() as session:
@@ -20,18 +20,18 @@ def AddUnit(unit: UnitDto):
 
 
 def GetAllUnits():
-    Units = UnitsDto(units = [])
+    Units = Dtos.UnitsDto(units = [])
     Session = sql.start_database()
     with Session() as session:
         for row in sql.GetAll(UnitsModel, session):
-            Unit = UnitDto()
+            Unit = Dtos.UnitDto()
             Unit.unit = row.unit
             Units.units.append(Unit)
     return Units
 
 
 def GetUnitById(id: int):
-    Unit = UnitDto()
+    Unit = Dtos.UnitDto()
     Session = sql.start_database()
     with Session() as session:
         query = sql.GetById(UnitsModel, id, session)
