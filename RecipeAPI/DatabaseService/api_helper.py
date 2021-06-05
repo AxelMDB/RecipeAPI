@@ -34,7 +34,7 @@ def GetUnitById(id: int):
     Unit = Dtos.UnitDto()
     Session = sql.start_database()
     with Session() as session:
-        query = sql.GetById(UnitsModel, id, session)
+        query = sql.GetById(Models.UnitsModel, id, session)
         if query is not None:
             Unit.unit = query.unit
         else:
