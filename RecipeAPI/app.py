@@ -42,7 +42,7 @@ class UnitByIdAPI(Resource):
         else:
             return "error"
 
-api.add_resource(UnitByIdAPI, "/Units/<int:unit_id>")
+api.add_resource(UnitByIdAPI, "/Unit/<int:unit_id>")
 
 
 if __name__ == '__main__':
