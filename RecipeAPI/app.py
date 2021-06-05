@@ -32,7 +32,7 @@ class UnitsAPI(Resource):
                 return "error", 400
         return "error", 400
 
-api.add_resource(UnitsAPI, "api/units")
+api.add_resource(UnitsAPI, "/api/units")
 
 class UnitByIdAPI(Resource):
     def get(self, unit_id):
@@ -42,7 +42,7 @@ class UnitByIdAPI(Resource):
         else:
             return "error"
 
-api.add_resource(UnitByIdAPI, "api/unit/<int:unit_id>")
+api.add_resource(UnitByIdAPI, "/api/unit/<int:unit_id>")
 
 
 if __name__ == '__main__':
