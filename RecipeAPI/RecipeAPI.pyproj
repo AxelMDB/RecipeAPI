@@ -11,7 +11,8 @@
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <LaunchProvider>Web launcher</LaunchProvider>
-    <WebBrowserUrl>http://RecipesAPI.com</WebBrowserUrl>
+    <WebBrowserUrl>
+    </WebBrowserUrl>
     <OutputPath>.</OutputPath>
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>RecipeAPI</Name>
@@ -19,6 +20,7 @@
     <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
     <SuppressPackageInstallationPrompt>True</SuppressPackageInstallationPrompt>
     <WebBrowserPort>5000</WebBrowserPort>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,16 +32,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
-    <Compile Include="DatabaseService\api_helper.py">
+    <Compile Include="database_service\api_helper.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DatabaseService\sql_commands.py">
+    <Compile Include="database_service\sql_commands.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DatabaseService\DeclarativeBase.py">
+    <Compile Include="database_service\base.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Dtos\equivalence.py">
+    <Compile Include="Dtos\conversion.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Dtos\units.py">
@@ -75,7 +77,7 @@
     <Compile Include="Mocks\mock_unit.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\cultures_model.py">
+    <Compile Include="Models\cuisines_model.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\ingredients_model.py">
@@ -84,7 +86,7 @@
     <Compile Include="Models\quantities_model.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\equivalences_model.py" />
+    <Compile Include="Models\conversions_model.py" />
     <Compile Include="Models\units_model.py">
       <SubType>Code</SubType>
     </Compile>
@@ -94,7 +96,7 @@
     <Compile Include="Models\procedures_model.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DatabaseService\__init__.py">
+    <Compile Include="database_service\__init__.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\__init__.py">
@@ -112,7 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="DatabaseService\" />
+    <Folder Include="database_service\" />
     <Folder Include="Dtos\" />
     <Folder Include="Mocks\" />
   </ItemGroup>

@@ -1,9 +1,10 @@
 from typing import List
-from .equivalence import EquivalenceDto
+from .conversion import ConversionDto
 
 
 class UnitDto(object):
     """description of class"""
-    def __init__(self, unit: str = "", equivalence_units: List[EquivalenceDto] = []):
+    def __init__(self, unit: str = "", type: str = "", conversions: List[ConversionDto] = []):
         self.unit = unit
-        self.equivalence_units = equivalence_units
+        self.type = type
+        self.conversions = conversions

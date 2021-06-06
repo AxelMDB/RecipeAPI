@@ -1,6 +1,6 @@
 from .culture import CultureDto
 from .cultures import CulturesDto
-from .equivalence import EquivalenceDto
+from .conversion import ConversionDto
 from .ingredient import IngredientDto
 from .ingredients import IngredientsDto
 from .recipe_ingredient import RecipeIngredientDto

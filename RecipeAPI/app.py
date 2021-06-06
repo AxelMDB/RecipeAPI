@@ -6,12 +6,13 @@ from flask import Flask, request
 from flask_restful import Resource, Api
 import jsons
 import Dtos
-import DatabaseService.api_helper as helper
+import database_service.api_helper as helper
 
 
 app = Flask(__name__)
 api = Api(app)
 wsgi_app = app.wsgi_app
+
 
 class UnitsAPI(Resource):
     """TODO"""
@@ -20,29 +21,48 @@ class UnitsAPI(Resource):
         return jsons.dump(AllUnits)
 
     def post(self):
-        if request.is_json:
-            try:
-                Unit = jsons.load(request.get_json(), Dtos.UnitDto)
-            except Exception as e:
-                print(e)
-                return "error", 400
-            if helper.AddUnit(Unit):
-                return "success", 201
-            else:
-                return "error", 400
-        return "error", 400
+        if not request.is_json:
+            return {"result": "invalid request"}, 400
+        try:
+            Units = jsons.load(request.get_json(), Dtos.UnitsDto)
+        except Exception as e:
+            print(e)
+            return {"result": "invalid request"}, 400
+        if helper.AddUnits(Units):
+            return {"result": "created"}, 201
+        else:
+            return {"result": "conflict"}, 409
+
 
 api.add_resource(UnitsAPI, "/api/units")
 
-class UnitByIdAPI(Resource):
-    def get(self, unit_id):
+
+class UnitAPI(Resource):
+    def get(self):
+        unit_id = request.args.get('id')
+        if not unit_id:
+            return "error"
         Unit = helper.GetUnitById(unit_id)
         if Unit is not None:
             return jsons.dump(Unit)
         else:
             return "error"
 
-api.add_resource(UnitByIdAPI, "/api/unit/<int:unit_id>")
+    def post(self):
+        if not request.is_json:
+            return {"result": "invalid request"}, 400
+        try:
+            Unit = jsons.load(request.get_json(), Dtos.UnitDto)
+        except Exception as e:
+            print(e)
+            return {"result": "invalid request"}, 400
+        if helper.AddUnit(Unit):
+            return {"result": "created"}, 201
+        else:
+            return {"result": "conflict"}, 409
+
+
+api.add_resource(UnitAPI, "/api/unit")
 
 
 if __name__ == '__main__':
