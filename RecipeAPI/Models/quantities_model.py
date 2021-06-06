@@ -1,4 +1,4 @@
-from DatabaseService.DeclarativeBase import Base as Model
+from database_service.base import Base as Model
 from sqlalchemy import Column, Integer, ForeignKey, Text
 
 class QuantitiesModel(Model):

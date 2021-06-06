@@ -1,6 +1,6 @@
-from DatabaseService.DeclarativeBase import Base as Model
+from database_service.base import Base as Model
 from sqlalchemy import Column, Integer, ForeignKey, Text
-
+from sqlalchemy.orm import relationship
 
 class ProceduresModel(Model):
     __tablename__ = 'procedures'
@@ -9,3 +9,5 @@ class ProceduresModel(Model):
     recipe_id = Column(Integer, ForeignKey('recipe_info.id'))
     step = Column(Integer)
     text = Column(Text)
+
+    recipe = relationship("RecipeInfoModel", back_populates="procedures")
