@@ -1,0 +1,71 @@
+Units = Models.UnitsModel(unit="cup", type="volume", number="fraction")
+Conversion = Models.ConversionsModel(unit_2_id="2", multiplier="250")
+Units.conversion.append(Conversion)
+Session = db.start_database()
+with Session() as session:
+    session = db.Add(Units, session)
+    try: 
+        session.commit()
+    except exc.SQLAlchemyError as e:
+        print(e)
+        session.rollback()
+
+        BEGIN (implicit)
+        INSERT INTO units (unit, type, number) VALUES (?, ?, ?)
+        generated in 0.04424s] ('cup', 'volume', 'fraction')
+        INSERT INTO conversions (unit_1_id, unit_2_id, multiplier, divider, "offset") VALUES (?, ?, ?, ?, ?)
+        [generated in 0.00148s] (1, '2', 250.0, None, None)
+        COMMIT
+
+    for row in db.GetAll(Models.UnitsModel, session):
+        print(row.id)
+        print(row.unit)
+        print(row.type)
+        print(row.number)
+        for conversion in row.conversion:
+            print(conversion.unit_2_id)
+            print(conversion.multiplier)
+
+            BEGIN (implicit)
+            SELECT units.id AS units_id, units.unit AS units_unit, units.type AS units_type, units.number AS units_number 
+            FROM units
+            [generated in 0.00138s] ()
+            1
+            cup
+            volume
+            fraction
+            SELECT conversions.id AS conversions_id, conversions.unit_1_id AS conversions_unit_1_id, conversions.unit_2_id AS conversions_unit_2_id, conversions.multiplier AS conversions_multiplier, conversions.divider AS conversions_divider, conversions."offset" AS conversions_offset 
+            FROM conversions 
+            WHERE ? = conversions.unit_1_id
+            [generated in 0.00068s] (1,)
+            2
+            250.0
+
+
+Session = db.start_database()
+with Session() as session:
+    Recipe = Models.RecipeInfoModel()
+    Recipe.recipe_name = "arepa"
+    Procedure = Models.ProceduresModel()
+    Procedure.step = 1
+    Procedure.text = "hello"
+    Quantity = Models.QuantitiesModel()
+    Quantity.quantity = 1
+    Quantity.unit = session.query(Models.UnitsModel).filter(Models.UnitsModel.unit == "cup").first()
+    Quantity.ingredient = session.query(Models.IngredientsModel).filter(Models.IngredientsModel.ingredient == "arepa").first()
+    Recipe.quantities.append(Quantity)
+    Recipe.procedures.append(Procedure)
+    session = db.Add(Recipe, session)
+    try: 
+        session.commit()
+    except exc.SQLAlchemyError as e:
+        print(e)
+        session.rollback()
+
+        INSERT INTO recipe_info (recipe_name, recipe_desc, cuisine_id) VALUES (?, ?, ?)
+        [generated in 0.00476s] ('arepa', None, None)
+        INSERT INTO procedures (recipe_id, step, text) VALUES (?, ?, ?)
+        [generated in 0.00287s] (1, 1, 'hello')
+        INSERT INTO quantities (quantity, unit_id, recipe_id, ingredient_id) VALUES (?, ?, ?, ?)
+        [generated in 0.00137s] (1, None, 1, None)
+        COMMIT

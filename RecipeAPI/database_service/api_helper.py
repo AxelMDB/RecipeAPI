@@ -29,8 +29,8 @@ def GetUnitById(id: int):
 
 def AddUnit(unit: Dtos.UnitDto):
     Unit = Models.UnitsModel()
-    Unit.unit = unit.unit
-    Unit.type = unit.type
+    Unit.unit = unit.unit.lower()
+    Unit.type = unit.type.lower()
     Session = db.start_database()
     with Session() as session:
         session = db.Add(Unit, session)
@@ -60,21 +60,24 @@ def AddUnits(units: Dtos.UnitsDto):
             session.rollback()
             return False
 
+
 if __name__=="__main__":
-    Recipe = Models.RecipeInfoModel(recipe_name="Arepa")
-    procedure = Models.ProceduresModel(step=1, text="hello")
-    Recipe.procedures.append(procedure)
     Session = db.start_database()
     with Session() as session:
+        Recipe = Models.RecipeInfoModel()
+        Recipe.recipe_name = "arepa"
+        Procedure = Models.ProceduresModel()
+        Procedure.step = 1
+        Procedure.text = "hello"
+        Quantity = Models.QuantitiesModel()
+        Quantity.quantity = 1
+        Quantity.unit = session.query(Models.UnitsModel).filter(Models.UnitsModel.unit == "cup").first()
+        Quantity.ingredient = session.query(Models.IngredientsModel).filter(Models.IngredientsModel.ingredient == "arepa").first()
+        Recipe.quantities.append(Quantity)
+        Recipe.procedures.append(Procedure)
         session = db.Add(Recipe, session)
         try: 
             session.commit()
         except exc.SQLAlchemyError as e:
             print(e)
             session.rollback()
-    # actually works!
-    """INSERT INTO recipe_info (recipe_name, recipe_desc, cuisine_id) VALUES (?, ?, ?)
-       [generated in 0.00173s] ('Arepa', None, None)
-       INSERT INTO procedures (recipe_id, step, text) VALUES (?, ?, ?)
-       [generated in 0.00188s] (1, 1, 'hello')
-       COMMIT"""

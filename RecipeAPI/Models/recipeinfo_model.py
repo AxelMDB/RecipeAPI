@@ -10,5 +10,8 @@ class RecipeInfoModel(Model):
     recipe_name = Column(Text, unique=True)
     recipe_desc = Column(Text, unique=True)
     cuisine_id = Column(Integer, ForeignKey('cuisine.id'))
+
     procedures = relationship("ProceduresModel", back_populates="recipe")
-    quantities = relationship("QuantitiesModel", backref="recipe")
+    quantities = relationship("QuantitiesModel", back_populates="recipe")
+
+    cuisine = relationship("CuisinesModel")
