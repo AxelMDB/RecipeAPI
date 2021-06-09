@@ -1,5 +1,6 @@
 from database_service.base import Base as Model
 from sqlalchemy import Column, Integer, ForeignKey, Text
+from sqlalchemy.orm import relationship
 
 class QuantitiesModel(Model):
     __tablename__ = 'quantities'
@@ -10,3 +11,6 @@ class QuantitiesModel(Model):
     recipe_id = Column(Integer, ForeignKey('recipe_info.id'))
     ingredient_id = Column(Integer, ForeignKey('ingredients.id'))
 
+    unit = relationship("UnitsModel")
+    recipe = relationship("RecipeInfoModel", back_populates="quantities")
+    ingredient = relationship("IngredientsModel")

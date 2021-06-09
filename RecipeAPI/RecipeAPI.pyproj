@@ -111,12 +111,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
+    <Content Include="Documentation\Documentation.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="database_service\" />
     <Folder Include="Dtos\" />
     <Folder Include="Mocks\" />
+    <Folder Include="Documentation\" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">

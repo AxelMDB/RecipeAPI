@@ -9,3 +9,5 @@ class IngredientsModel(Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     ingredient = Column(Text, unique=True)
     main_unit_id = Column(Integer, ForeignKey('units.id'))
+
+    main_unit = relationship("UnitsModel")
