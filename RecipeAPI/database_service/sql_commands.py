@@ -24,6 +24,5 @@ def GetAll(table: Base, session):
 def GetById(table: Base, id: int, session):
     return session.query(table).filter(table.id == id).first()
 
-def Delete(table: Base, session):
-    session.delete(table)
-    return session
+def Delete(entry, id: int, session):
+    return session.delete(entry)
