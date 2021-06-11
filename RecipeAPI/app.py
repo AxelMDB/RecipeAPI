@@ -3,7 +3,7 @@ This script runs the application using a development server.
 It contains the definition of routes and views for the application.
 """
 from flask import Flask, request
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 import jsons
 import Dtos
 import database_service.api_helper as helper
@@ -14,6 +14,10 @@ api = Api(app)
 wsgi_app = app.wsgi_app
 
 
+parser = reqparse.RequestParser()
+parser.add_argument('id', type=int, help="Please provide an id", required=True)
+
+
 class UnitsAPI(Resource):
     """TODO"""
     def get(self):
@@ -21,17 +25,15 @@ class UnitsAPI(Resource):
         return jsons.dump(AllUnits)
 
     def post(self):
-        if not request.is_json:
-            return {"result": "invalid request"}, 400
         try:
-            Units = jsons.load(request.get_json(), Dtos.UnitsDto)
+            Units = jsons.load(request.get_json(force=True), Dtos.UnitsDto)
         except Exception as e:
             print(e)
-            return {"result": "invalid request"}, 400
+            return {"message": "invalid request"}, 400
         if helper.AddUnits(Units):
-            return {"result": "created"}, 201
+            return {"message": "created"}, 201
         else:
-            return {"result": "conflict"}, 409
+            return {"message": "conflict"}, 409
 
 
 api.add_resource(UnitsAPI, "/api/units")
@@ -39,31 +41,45 @@ api.add_resource(UnitsAPI, "/api/units")
 
 class UnitAPI(Resource):
     def get(self):
-        unit_id = request.args.get('id')
-        if not unit_id:
-            return "error"
-        Unit = helper.GetUnitById(unit_id)
+        args = parser.parse_args()
+        Unit = helper.GetUnitById(args['id'] )
         if Unit is not None:
             return jsons.dump(Unit)
         else:
             return "error"
 
     def post(self):
-        if not request.is_json:
-            return {"result": "invalid request"}, 400
         try:
-            Unit = jsons.load(request.get_json(), Dtos.UnitDto)
+            Unit = jsons.load(request.get_json(force=True), Dtos.UnitDto)
         except Exception as e:
             print(e)
-            return {"result": "invalid request"}, 400
+            return {"message": "invalid request"}, 400
         if helper.AddUnit(Unit):
-            return {"result": "created"}, 201
+            return {"message": "created"}, 201
         else:
-            return {"result": "conflict"}, 409
+            return {"message": "conflict"}, 409
+        
+    def put(self):
+        args = parser.parse_args()
+        try:
+            Unit = jsons.load(request.get_json(force=True), Dtos.UnitDto)
+        except Exception as e:
+            print(e)
+            return {"message": "invalid request"}, 400
+        if helper.UpdateUnit(Unit, args['id']):
+            return {"message": "updated"}
+        else:
+            return {"message": "conflict"}, 409
+
+    def delete(self):
+        args = parser.parse_args()
+        if helper.DeleteUnit(args['id']):
+            return {"message": "deleted"}
+        else:
+            return {"message": "not allowed"}
 
 
 api.add_resource(UnitAPI, "/api/unit")
-
 
 if __name__ == '__main__':
     import os
