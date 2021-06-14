@@ -14,14 +14,24 @@ api = Api(app)
 wsgi_app = app.wsgi_app
 
 
-parser = reqparse.RequestParser()
-parser.add_argument('id', type=int, help="Please provide an id", required=True)
+idparser = reqparse.RequestParser()
+idparser.add_argument('id', type=int, help="Please provide an id", required=True)
+
+UnitsParser = reqparse.RequestParser()
+UnitsParser.add_argument('unit', type=str)
+UnitsParser.add_argument('type', type=str)
+UnitsParser.add_argument('number', type=str)
 
 
 class UnitsAPI(Resource):
     """TODO"""
     def get(self):
-        AllUnits = helper.GetAllUnits()
+        allargs = UnitsParser.parse_args()
+        args = {}
+        for key, value in allargs.items():
+            if value is not None:
+                args[key] = value
+        AllUnits = helper.GetUnitsWithArguments(args)
         return jsons.dump(AllUnits)
 
     def post(self):
@@ -41,8 +51,8 @@ api.add_resource(UnitsAPI, "/api/units")
 
 class UnitAPI(Resource):
     def get(self):
-        args = parser.parse_args()
-        Unit = helper.GetUnitById(args['id'] )
+        args = idparser.parse_args()
+        Unit = helper.GetUnitById(args['id'])
         if Unit is not None:
             return jsons.dump(Unit)
         else:
@@ -60,7 +70,7 @@ class UnitAPI(Resource):
             return {"message": "conflict"}, 409
         
     def put(self):
-        args = parser.parse_args()
+        args = idparser.parse_args()
         try:
             Unit = jsons.load(request.get_json(force=True), Dtos.UnitDto)
         except Exception as e:
@@ -72,7 +82,7 @@ class UnitAPI(Resource):
             return {"message": "conflict"}, 409
 
     def delete(self):
-        args = parser.parse_args()
+        args = idparser.parse_args()
         if helper.DeleteUnit(args['id']):
             return {"message": "deleted"}
         else:

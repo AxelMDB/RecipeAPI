@@ -41,9 +41,6 @@
     <Compile Include="database_service\base.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Dtos\conversion.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Dtos\units.py">
       <SubType>Code</SubType>
     </Compile>
@@ -86,7 +83,6 @@
     <Compile Include="Models\quantities_model.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\conversions_model.py" />
     <Compile Include="Models\units_model.py">
       <SubType>Code</SubType>
     </Compile>
