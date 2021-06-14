@@ -1,11 +1,13 @@
 from typing import List
-from .conversion import ConversionDto
 
 
 class UnitDto(object):
     """description of class"""
-    def __init__(self, unit: str = "", type: str = "", number : str = "", conversions: List[ConversionDto] = []):
+    def __init__(self, unit: str = "", type: str = "", number : str = "",
+                 toSI : float = 1.0, SIto : float = 1.0, offset : float = 0):
         self.unit = unit
         self.type = type
         self.number = number
-        self.conversions = conversions
+        self.toSI = toSI
+        self.SIto = SIto
+        self.offset = offset

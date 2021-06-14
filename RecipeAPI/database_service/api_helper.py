@@ -3,16 +3,17 @@ import Models
 from sqlalchemy import exc
 import database_service.sql_commands as db
 
+unit_types = {"volume", "mass"}
+unit_numbers = {"integer", "decimal", "fraction"}
 
-def GetAllUnits():
+
+def GetUnitsWithArguments(filters: dict):
     Units = Dtos.UnitsDto(units = [])
     Session = db.start_database()
     with Session() as session:
-        for row in db.GetAll(Models.UnitsModel, session):
-            Unit = Dtos.UnitDto()
-            Unit.unit = row.unit
-            Unit.type = row.type
-            Unit.number = row.number
+        result = db.GetWithArguments(Models.UnitsModel, filters, session)
+        for row in result:
+            Unit = UnitsModelToDto(row)
             Units.units.append(Unit)
     return Units
 
@@ -23,18 +24,15 @@ def GetUnitById(id: int):
         query = db.GetById(Models.UnitsModel, id, session)
         if query is None:
             return None
-        Unit.unit = query.unit
-        Unit.type = query.type
-        Unit.number = query.number
+        Unit = UnitsModelToDto(query)
         return Unit
 
 def AddUnit(unit: Dtos.UnitDto):
-    Unit = Models.UnitsModel()
-    Unit.unit = unit.unit.lower()
-    Unit.type = unit.type.lower()
-    Unit.number = unit.number.lower()
     Session = db.start_database()
     with Session() as session:
+        Unit = UnitDtoToModel(unit)
+        if Unit is None:
+            return False
         session = db.Add(Unit, session)
         try: 
             session.commit()
@@ -47,9 +45,9 @@ def AddUnit(unit: Dtos.UnitDto):
 def AddUnits(units: Dtos.UnitsDto):
     AllUnits = []
     for unit in units.units:
-        Unit = Models.UnitsModel()
-        Unit.unit = unit.unit
-        Unit.type = unit.type
+        Unit = UnitDtoToModel(unit)
+        if Unit is None:
+            return False
         AllUnits.append(Unit)
     Session = db.start_database()
     with Session() as session:
@@ -67,10 +65,8 @@ def UpdateUnit(unit: Dtos.UnitDto, id: int):
     with Session() as session:
         Unit = db.GetById(Models.UnitsModel, id, session)
         if Unit is None:
-            return false
-        Unit.unit = unit.unit
-        Unit.type = unit.type
-        Unit.number = unit.number
+            return False
+        Unit = UnitDtoToModel(unit, Unit)
         try:
             session.commit()
             return True
@@ -84,7 +80,7 @@ def DeleteUnit(id: int):
     with Session() as session:
         Unit = db.GetById(Models.UnitsModel, id, session)
         if Unit is None:
-            return false
+            return False
         try:
             session.delete(Unit)
             session.commit()
@@ -93,3 +89,25 @@ def DeleteUnit(id: int):
             print(e)
             session.rollback()
             return False
+
+def UnitsModelToDto(row):
+    Unit = Dtos.UnitDto()
+    Unit.unit = row.unit
+    Unit.type = row.type
+    Unit.number = row.number
+    Unit.toSI = row.toSI
+    Unit.SIto = row.SIto
+    return Unit
+
+def UnitDtoToModel(unit: Dtos.UnitsDto, Unit: Models.UnitsModel = Models.UnitsModel()):
+    global unit_types
+    global unit_numbers
+    Unit.unit = unit.unit.lower()
+    if unit.type.lower() not in unit_types or unit.number.lower() not in unit_numbers:
+        return None
+    Unit.type = unit.type.lower()
+    Unit.number = unit.number.lower()
+    Unit.toSI = unit.toSI
+    Unit.SIto = unit.SIto
+    Unit.offset = unit.offset
+    return Unit

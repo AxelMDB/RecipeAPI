@@ -1,5 +1,5 @@
 from database_service.base import Base as Model
-from sqlalchemy import Column, Integer, ForeignKey, Text
+from sqlalchemy import Column, Integer, ForeignKey, Text, Float
 from sqlalchemy.orm import relationship
 
 
@@ -10,7 +10,6 @@ class UnitsModel(Model):
     unit = Column(Text, unique=True)
     type = Column(Text, nullable=False)
     number = Column(Text, nullable=False)
-
-    conversion = relationship(
-        'ConversionsModel',
-        primaryjoin="(or_(UnitsModel.id == ConversionsModel.unit_1_id, UnitsModel.id == ConversionsModel.unit_2_id))")
+    toSI = Column(Float)
+    SIto = Column(Float)
+    offset = Column(Float)
