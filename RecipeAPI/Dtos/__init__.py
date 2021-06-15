@@ -1,5 +1,5 @@
-from .culture import CultureDto
-from .cultures import CulturesDto
+from .cuisine import CuisineDto
+from .cuisines import CuisinesDto
 from .ingredient import IngredientDto
 from .ingredients import IngredientsDto
 from .recipe_ingredient import RecipeIngredientDto

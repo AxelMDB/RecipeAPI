@@ -6,7 +6,7 @@ class QuantitiesModel(Model):
     __tablename__ = 'quantities'
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True,autoincrement=True)
-    quantity = Column(Text)
+    quantity = Column(Text, nullable=False)
     unit_id = Column(Integer, ForeignKey('units.id'))
     recipe_id = Column(Integer, ForeignKey('recipe_info.id'))
     ingredient_id = Column(Integer, ForeignKey('ingredients.id'))
