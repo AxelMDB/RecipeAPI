@@ -35,6 +35,9 @@
     <Compile Include="database_service\api_helper.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="database_service\converters.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="database_service\sql_commands.py">
       <SubType>Code</SubType>
     </Compile>
@@ -47,10 +50,10 @@
     <Compile Include="Dtos\ingredients.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Dtos\cultures.py">
+    <Compile Include="Dtos\cuisines.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Dtos\culture.py">
+    <Compile Include="Dtos\cuisine.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Dtos\ingredient.py">
@@ -106,6 +109,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Documentation\TextFile1.txt" />
     <Content Include="requirements.txt" />
     <Content Include="Documentation\Documentation.txt" />
   </ItemGroup>
