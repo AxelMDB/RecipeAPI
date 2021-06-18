@@ -77,6 +77,9 @@
     <Compile Include="Mocks\mock_unit.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Mocks\mock_recipe.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Models\cuisines_model.py">
       <SubType>Code</SubType>
     </Compile>

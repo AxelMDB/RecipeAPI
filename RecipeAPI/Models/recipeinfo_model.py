@@ -11,7 +11,9 @@ class RecipeInfoModel(Model):
     recipe_desc = Column(Text)
     cuisine_id = Column(Integer, ForeignKey('cuisine.id'))
 
-    procedures = relationship("ProceduresModel", back_populates="recipe")
-    quantities = relationship("QuantitiesModel", back_populates="recipe")
-
     cuisine = relationship("CuisinesModel")
+    procedures = relationship("ProceduresModel", back_populates="recipe",
+                              cascade = "all, delete, delete-orphan", order_by="ProceduresModel.step")
+    quantities = relationship("QuantitiesModel", back_populates="recipe",
+                              cascade = "all, delete, delete-orphan")
+

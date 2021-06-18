@@ -6,7 +6,7 @@ from typing import List
 
 class RecipeDto(object):
     """description of class"""
-    def __init__(self, recipe_name: str = "", recipe_desc: str = "", recipe_cuisine: CuisineDto = None,
+    def __init__(self, recipe_name: str = None, recipe_desc: str = None, recipe_cuisine: str = None,
                  ingredient_list: List[RecipeIngredientDto] = [], procedure_list: List[RecipeProcedureDto] = []):
         self.recipe_name = recipe_name
         self.recipe_desc = recipe_desc
