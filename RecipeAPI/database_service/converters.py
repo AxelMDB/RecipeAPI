@@ -1,8 +1,10 @@
 import Dtos
 import Models
+from fractions import Fraction
 
 unit_types = {"volume", "mass"}
-unit_numbers = {"integer", "decimal", "fraction"}
+unit_numbers = ["integer", "decimal", "fraction"]
+
 
 def UnitsModelToDto(row):
     Unit = Dtos.UnitDto()
@@ -49,9 +51,45 @@ def CuisinesModelToDto(row):
     return Cuisine
 
 def CuisineDtoToModel(cuisine: Dtos.CuisineDto,
-                        Cuisine: Models.CuisinesModel = Models.CuisinesModel()):
+                      Cuisine: Models.CuisinesModel = Models.CuisinesModel()):
     if cuisine.cuisine is None:
         return None
     Cuisine.cuisine = cuisine.cuisine.lower()
     Cuisine.description = cuisine.description
     return Cuisine
+
+def NumberChecker(quantity: str):
+    numbers = []
+    try: 
+        int(str)
+        numbers.append(unit_numbers[0])
+    except: 
+        pass
+    try:
+        float(str)
+        numbers.append(unit_numbers[1])
+    except:
+        pass
+    try:
+        Fraction(quantity)
+        numbers.append(unit_numbers[2])
+    except:
+        pass
+    return numbers
+
+def RecipeInfoModelToDto(row):
+    Recipe = Dtos.RecipeDto(ingredient_list = [], procedure_list = [])
+    Recipe.recipe_name = row.recipe_name
+    Recipe.recipe_desc = row.recipe_desc
+    Recipe.recipe_cuisine = row.cuisine.cuisine
+    for quantity in row.quantities:
+        Ingredient = Dtos.RecipeIngredientDto()
+        Ingredient.ingredient = quantity.ingredient.ingredient
+        Ingredient.quantity = quantity.quantity
+        Ingredient.unit = quantity.unit.unit
+        Recipe.ingredient_list.append(Ingredient)
+    for procedure in row.procedures:
+        Procedure = Dtos.RecipeProcedureDto()
+        Procedure.text = procedure.text
+        Recipe.procedure_list.append(Procedure)
+    return Recipe
