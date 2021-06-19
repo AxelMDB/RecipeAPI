@@ -110,6 +110,21 @@
     <Compile Include="Mocks\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Resources\ingredients_resource.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\cuisines_resource.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\recipes_resource.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\units_resource.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Documentation\TextFile1.txt" />
@@ -122,6 +137,7 @@
     <Folder Include="Dtos\" />
     <Folder Include="Mocks\" />
     <Folder Include="Documentation\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">

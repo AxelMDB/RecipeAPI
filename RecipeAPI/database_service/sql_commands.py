@@ -12,6 +12,7 @@ def start_database():
     Session = sessionmaker(bind=engine)
     return Session
 
+
 def Add(entry, session):
     session.add(entry)
     return session
@@ -24,15 +25,12 @@ def GetAll(table: Base, session):
     return session.query(table) 
 
 def GetById(table: Base, id: int, session):
-    return session.query(table).filter(table.id == id).first()
+    return session.get(table, id)
 
 def GetWithArguments(table: Base, filters: dict, session):
     statement = session.query(table)
     for key, value in filters.items():
-        if value is not list:
-            statement = statement.filter(getattr(table, key) == value)
-        else:
-            statement = statement.filter(getattr(table, key).in_(value))
+        statement = statement.filter(getattr(table, key).in_(value))
     return statement
 
 def GetRecipeWithArguments(filters: dict, session):
