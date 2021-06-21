@@ -53,7 +53,10 @@ class UnitAPI(Resource):
 
     def put(self, id):
         """PUT(update) a single item by id"""
-        Unit = jsons.load(request.get_json(), cls=UnitDto, strict=True)
+        try:
+            Unit = jsons.load(request.get_json(), UnitDto, strict=True)
+        except:
+            raise w_exc.BadRequest()
         helper.UpdateUnit(Unit, id)
         return {"message": "updated"}
 

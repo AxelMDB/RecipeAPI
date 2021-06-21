@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 class QuantitiesModel(Model):
     __tablename__ = 'quantities'
     __table_args__ = {'extend_existing': True}
-    id = Column(Integer, primary_key=True,autoincrement=True)
+    id = Column(Integer, primary_key=True)
     quantity = Column(Text, nullable=False)
     unit_id = Column(Integer, ForeignKey('units.id'))
     recipe_id = Column(Integer, ForeignKey('recipe_info.id'))

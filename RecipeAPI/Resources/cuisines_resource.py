@@ -25,14 +25,14 @@ class CuisinesAPI(Resource):
         """POST a collection of units or a single unit item"""
         #try loading the collection
         try:
-            Cuisines = jsons.load(request.get_json(), cls=CuisinesDto, strict=True)
+            Cuisines = jsons.load(request.get_json(force=True), cls=CuisinesDto, strict=True)
             iscollection = True
         except:
             iscollection = False
         #if not a collection, load a single item, returns 404 as error
         if not iscollection:
             try:
-                Cuisine = jsons.load(request.get_json(), cls=CuisineDto, strict=True)
+                Cuisine = jsons.load(request.get_json(force=True), cls=CuisineDto, strict=True)
             except:
                 raise w_exc.BadRequest()
         if iscollection:
@@ -49,7 +49,10 @@ class CuisineAPI(Resource):
         return jsons.dump(Cuisine, sort_keys=False)
         
     def put(self, id):
-        Cuisine = jsons.load(request.get_json(force=True), cls=Dtos.CuisineDto, strict=True)
+        try:
+            Cuisine = jsons.load(request.get_json(force=True), cls=Dtos.CuisineDto, strict=True)
+        except:
+            raise w_exc.BadRequest()
         helper.UpdateCuisine(Cuisine, id)
         return {"message": "updated"}
 

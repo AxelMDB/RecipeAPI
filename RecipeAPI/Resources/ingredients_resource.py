@@ -51,7 +51,10 @@ class IngredientAPI(Resource):
         
     def put(self, id):
         """PUT(update) a single item by id"""
-        Ingredient = jsons.load(request.get_json(force=True), cls=Dtos.IngredientDto, strict=True)
+        try:
+            Ingredient = jsons.load(request.get_json(), cls=IngredientDto, strict=True)
+        except:
+            raise w_exc.BadRequest()
         helper.UpdateIngredient(Ingredient, id)
         return {"message": "updated"}, 
 

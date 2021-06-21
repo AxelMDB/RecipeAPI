@@ -110,6 +110,9 @@
     <Compile Include="Mocks\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Resources\SIunits_resource.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Resources\ingredients_resource.py">
       <SubType>Code</SubType>
     </Compile>
