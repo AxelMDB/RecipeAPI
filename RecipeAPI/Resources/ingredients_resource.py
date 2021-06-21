@@ -1,5 +1,6 @@
 from flask import request
 from flask_restful import Resource, reqparse
+import werkzeug.exceptions as w_exc
 import jsons
 from Dtos import IngredientsDto, IngredientDto
 import database_service.api_helper as helper
@@ -24,46 +25,39 @@ class IngredientsAPI(Resource):
         """POST a collection of ingredients or a single ingredient item"""
         #try loading the collection
         try:
-            Ingredients = jsons.load(request.get_json(force=True), cls=IngredientsDto, strict=True)
+            Ingredients = jsons.load(request.get_json(), cls=IngredientsDto, strict=True)
             iscollection = True
         except:
             iscollection = False
         #if not a collection load a single item, returns 404 when error
         if not iscollection:
-            Ingredient = jsons.load(request.get_json(force=True), cls=IngredientDto, strict=True)
+            try:
+                Ingredient = jsons.load(request.get_json(), cls=IngredientDto, strict=True)
+            except:
+                raise w_exc.BadRequest()
         if iscollection:
-            if helper.AddIngredients(Ingredients):
-                return {"message": "created"}, 201
-            else:
-                return {"message": "conflict"}, 409
+            helper.AddIngredients(Ingredients)
+            return {"message": "created"}, 201
         else:
-            if helper.AddIngredient(Ingredient):
-                return {"message": "created"}, 201
-            else:
-                return {"message": "conflict"}, 409
+            helper.AddIngredient(Ingredient)
+            return {"message": "created"}, 201
 
 
 class IngredientAPI(Resource):
     def get(self, id):
         """GET a single item by id"""
         Ingredient = helper.GetIngredientById(id)
-        if Ingredient is not None:
-            return jsons.dump(Ingredient, sort_keys=False)
-        else:
-            return {"message": "not found"}, 404
+        return jsons.dump(Ingredient, sort_keys=False)
         
     def put(self, id):
         """PUT(update) a single item by id"""
         Ingredient = jsons.load(request.get_json(force=True), cls=Dtos.IngredientDto, strict=True)
-        if helper.UpdateIngredient(Ingredient, id):
-            return {"message": "updated"}, 
-        else:
-            return {"message": "conflict"}, 409
+        helper.UpdateIngredient(Ingredient, id)
+        return {"message": "updated"}, 
 
     def delete(self, id):
         """DELETE a single item by id"""
-        if helper.DeleteIngredient(id):
-            return {"message": "deleted"}
-        else:
-            return {"message": "not allowed"}
+        helper.DeleteIngredient(id)
+        return {"message": "deleted"}
+
 

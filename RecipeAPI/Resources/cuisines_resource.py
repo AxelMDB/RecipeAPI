@@ -1,5 +1,6 @@
 from flask import request
 from flask_restful import Resource, reqparse
+import werkzeug.exceptions as w_exc
 import jsons
 from Dtos import CuisinesDto, CuisineDto
 import database_service.api_helper as helper
@@ -24,42 +25,35 @@ class CuisinesAPI(Resource):
         """POST a collection of units or a single unit item"""
         #try loading the collection
         try:
-            Cuisines = jsons.load(request.get_json(force=True), cls=CuisinesDto, strict=True)
+            Cuisines = jsons.load(request.get_json(), cls=CuisinesDto, strict=True)
             iscollection = True
         except:
             iscollection = False
         #if not a collection, load a single item, returns 404 as error
         if not iscollection:
-            Cuisine = jsons.load(request.get_json(force=True), cls=CuisineDto, strict=True)
+            try:
+                Cuisine = jsons.load(request.get_json(), cls=CuisineDto, strict=True)
+            except:
+                raise w_exc.BadRequest()
         if iscollection:
-            if helper.AddCuisines(Cuisines):
-                return {"message": "created"}, 201
-            else:
-                return {"message": "conflict"}, 409
+            helper.AddCuisines(Cuisines)
+            return {"message": "created"}, 201
         else:
-            if helper.AddCuisine(Cuisine):
-                return {"message": "created"}, 201
-            else:
-                return {"message": "conflict"}, 409
+            helper.AddCuisine(Cuisine)
+            return {"message": "created"}, 201
 
 
 class CuisineAPI(Resource):
     def get(self, id):
         Cuisine = helper.GetCuisineById(id)
-        if Cuisine is not None:
-            return jsons.dump(Cuisine, sort_keys=False)
-        else:
-            return 404
+        return jsons.dump(Cuisine, sort_keys=False)
         
     def put(self, id):
         Cuisine = jsons.load(request.get_json(force=True), cls=Dtos.CuisineDto, strict=True)
-        if helper.UpdateCuisine(Cuisine, id):
-            return {"message": "updated"}, 
-        else:
-            return {"message": "conflict"}, 409
+        helper.UpdateCuisine(Cuisine, id)
+        return {"message": "updated"}
 
     def delete(self):
-        if helper.DeleteCuisine(id):
-            return {"message": "deleted"}
-        else:
-            return {"message": "not allowed"}
+        helper.DeleteCuisine(id)
+        return {"message": "deleted"}
+

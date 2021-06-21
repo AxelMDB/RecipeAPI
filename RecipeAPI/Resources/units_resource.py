@@ -1,5 +1,6 @@
 from flask import request
 from flask_restful import Resource, reqparse
+import werkzeug.exceptions as w_exc
 import jsons
 from Dtos import UnitDto, UnitsDto
 import database_service.api_helper as helper
@@ -26,46 +27,38 @@ class UnitsAPI(Resource):
         """POST a collection of units or a single unit item"""
         #try loading the collection
         try:
-            Units = jsons.load(request.get_json(force=True), cls=UnitsDto, strict=True)
+            Units = jsons.load(request.get_json(), cls=UnitsDto, strict=True)
             iscollection = True
         except:
             iscollection = False
         #if not a collection load a single item, returns 404 as error
         if not iscollection:
-            Unit = jsons.load(request.get_json(force=True), cls=UnitDto, strict=True)
+            try:
+                Unit = jsons.load(request.get_json(), cls=UnitDto, strict=True)
+            except:
+                raise w_exc.BadRequest()
         if iscollection:
-            if helper.AddUnits(Units):
-                return {"message": "created"}, 201
-            else:
-                return {"message": "conflict"}, 409
+            helper.AddUnits(Units)
+            return {"message": "created"}, 201
         else:
-            if helper.AddUnit(Unit):
-                return {"message": "created"}, 201
-            else:
-                return {"message": "conflict"}, 409
+            helper.AddUnit(Unit)
+            return {"message": "created"}, 201
 
 
 class UnitAPI(Resource):
     def get(self, id):
         """GET a single item by id"""
         Unit = helper.GetUnitById(id)
-        if Unit is not None:
-            return jsons.dump(Unit, sort_keys=False)
-        else:
-            return {"message": "not found"}, 404
+        return jsons.dump(Unit, sort_keys=False)
 
     def put(self, id):
         """PUT(update) a single item by id"""
-        Unit = jsons.load(request.get_json(force=True), cls=UnitDto, strict=True)
-        if helper.UpdateUnit(Unit, id):
-            return {"message": "updated"}
-        else:
-            return {"message": "conflict"}, 409
+        Unit = jsons.load(request.get_json(), cls=UnitDto, strict=True)
+        helper.UpdateUnit(Unit, id)
+        return {"message": "updated"}
 
     def delete(self, id):
         """DELETE a single item by id"""
-        if helper.DeleteUnit(id):
-            return {"message": "deleted"}
-        else:
-            return {"message": "not allowed"}
+        helper.DeleteUnit(id)
+        return {"message": "deleted"}
 
