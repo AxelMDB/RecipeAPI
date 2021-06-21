@@ -24,30 +24,22 @@ class RecipesAPI(Resource):
 
     def post(self):
         Recipe = jsons.load(request.get_json(force=True), RecipeDto, strict=True)
-        if helper.AddOrUpdateRecipe(Recipe):
-            return {"message": "created"}, 201
-        else:
-            return {"message": "conflict"}
+        helper.AddOrUpdateRecipe(Recipe)
+        return {"message": "created"}, 201
 
 
 class RecipeAPI(Resource):
     def get(self, id):
         args = idparser.parse_args()
         Recipe = helper.GetRecipeById(id)
-        if Recipe is not None:
-            return jsons.dump(Recipe, sort_keys=False)
-        else:
-            return {"message": "not found"}, 404
+        return jsons.dump(Recipe, sort_keys=False)
    
     def put(self, id):
         Recipe = jsons.load(request.get_json(force=True), cls=RecipeDto, strict=True)
-        if helper.AddOrUpdateRecipe(Recipe, id):
-            return {"message": "updated"}
-        else:
-            return {"message": "conflict"}, 409
+        helper.AddOrUpdateRecipe(Recipe, id)
+        return {"message": "updated"}
 
     def delete(self, id):
-        if helper.DeleteRecipe(id):
-            return {"message": "deleted"}
-        else:
-            return {"message": "not allowed"}
+        helper.DeleteRecipe(id)
+        return {"message": "deleted"}
+
