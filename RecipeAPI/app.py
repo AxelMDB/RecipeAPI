@@ -21,6 +21,7 @@ api.add_resource(Resources.CuisinesAPI, "/api/cuisines")
 api.add_resource(Resources.CuisineAPI, "/api/cuisines/<int:id>")
 api.add_resource(Resources.RecipesAPI, "/api/recipes")
 api.add_resource(Resources.RecipeAPI, "/api/recipes/<int:id>")
+api.add_resource(Resources.SIUnitsAPI, "/api/SI_Units")
 
 
 @app.errorhandler(HTTPException)
@@ -31,7 +32,6 @@ def handle_exception(e):
     # replace the body with JSON
     response.data = json.dumps({
         "code": e.code,
-        "name": e.name,
         "description": e.description,
     })
     response.content_type = "application/json"

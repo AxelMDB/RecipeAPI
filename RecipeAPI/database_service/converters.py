@@ -2,7 +2,7 @@ import Dtos
 import Models
 from fractions import Fraction
 
-unit_types = {"volume", "mass"}
+unit_types = {"volume", "mass", "temperature"}
 unit_numbers = ["integer", "decimal", "fraction"]
 
 

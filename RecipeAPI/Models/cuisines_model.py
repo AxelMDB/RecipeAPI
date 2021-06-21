@@ -5,6 +5,6 @@ from sqlalchemy import Column, Integer, Text
 class CuisinesModel(Model):
     __tablename__ = 'cuisine'
     __table_args__ = {'extend_existing': True}
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     cuisine = Column(Text, unique=True, nullable=False)
     description = Column(Text)

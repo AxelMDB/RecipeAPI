@@ -1,5 +1,6 @@
 from flask import request
 from flask_restful import Resource, reqparse
+import werkzeug.exceptions as w_exc
 import jsons
 from Dtos import RecipeDto, RecipesDto
 import database_service.api_helper as helper
@@ -23,19 +24,24 @@ class RecipesAPI(Resource):
         return jsons.dump(Recipes, sort_keys=False)
 
     def post(self):
-        Recipe = jsons.load(request.get_json(force=True), RecipeDto, strict=True)
+        try:
+            Recipe = jsons.load(request.get_json(force=True), RecipeDto, strict=True)
+        except:
+            raise w_exc.BadRequest()
         helper.AddOrUpdateRecipe(Recipe)
         return {"message": "created"}, 201
 
 
 class RecipeAPI(Resource):
     def get(self, id):
-        args = idparser.parse_args()
         Recipe = helper.GetRecipeById(id)
         return jsons.dump(Recipe, sort_keys=False)
    
     def put(self, id):
-        Recipe = jsons.load(request.get_json(force=True), cls=RecipeDto, strict=True)
+        try:
+            Recipe = jsons.load(request.get_json(force=True), cls=RecipeDto, strict=True)
+        except:
+            raise w_exc.BadRequest()
         helper.AddOrUpdateRecipe(Recipe, id)
         return {"message": "updated"}
 

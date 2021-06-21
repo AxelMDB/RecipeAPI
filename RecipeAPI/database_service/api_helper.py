@@ -314,8 +314,10 @@ def RecipeDtoToModelAndAdd(recipe: Dtos.RecipeDto, id: int = None):
             Recipe = session.get(Models.RecipeInfoModel, id)
             if Recipe is None:
                 raise w_exc.NotFound()
-            del Recipe.quantities
-            del Recipe.procedures
+            for quantity in Recipe.quantities:
+                session.delete(quantity)
+            for procedure in Recipe.procedures:
+                session.delete(procedure)
         else:
             Recipe = Models.RecipeInfoModel()
         Recipe.recipe_name = recipe.recipe_name

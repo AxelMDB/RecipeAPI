@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 class RecipeInfoModel(Model):
     __tablename__ = 'recipe_info'
     __table_args__ = {'extend_existing': True}
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     recipe_name = Column(Text, unique=True, nullable=False)
     recipe_desc = Column(Text)
     cuisine_id = Column(Integer, ForeignKey('cuisine.id'))
