@@ -8,7 +8,6 @@ import database_service.api_helper as helper
 
 cuisines_parser = reqparse.RequestParser()
 cuisines_parser.add_argument('cuisine', type=str, action='append')
-cuisines_parser.add_argument('description', type=str, action='append')
 
 
 class CuisinesAPI(Resource):
