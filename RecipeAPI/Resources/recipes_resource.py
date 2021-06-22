@@ -8,7 +8,6 @@ import database_service.api_helper as helper
 
 recipe_parser = reqparse.RequestParser()
 recipe_parser.add_argument('recipe_name', type=str, action='append')
-recipe_parser.add_argument('recipe_desc', type=str, action='append')
 recipe_parser.add_argument('ingredient', type=str, action='append')
 recipe_parser.add_argument('recipe_cuisine', type=str, action='append')
 
