@@ -2,7 +2,7 @@ import Dtos
 import Models
 from fractions import Fraction
 
-unit_types = {"volume", "mass", "temperature"}
+unit_types = {"volume", "mass", "temperature", "dimensionless"}
 unit_numbers = ["integer", "decimal", "fraction"]
 
 
@@ -15,9 +15,12 @@ def UnitsModelToDto(row):
     Unit.SIto = row.SIto
     return Unit
 
-def UnitDtoToModel(unit: Dtos.UnitDto, Unit: Models.UnitsModel = Models.UnitsModel()):
+def UnitDtoToModel(unit: Dtos.UnitDto, Unit = None):
     global unit_types
     global unit_numbers
+    if Unit is None:
+        Unit = Models.UnitsModel()
+    print(Unit.id)
     if unit.unit is None:
         return None
     Unit.unit = unit.unit.lower()
@@ -37,7 +40,9 @@ def IngredientsModelToDto(row):
     return Ingredient
 
 def IngredientDtoToModel(ingredient: Dtos.IngredientDto,
-                        Ingredient: Models.IngredientsModel = Models.IngredientsModel()):
+                        Ingredient = None):
+    if Ingredient is None:
+        Ingredient = Models.IngredientsModel()
     if ingredient.ingredient is None:
         return None
     Ingredient.ingredient = ingredient.ingredient.lower()
@@ -51,7 +56,9 @@ def CuisinesModelToDto(row):
     return Cuisine
 
 def CuisineDtoToModel(cuisine: Dtos.CuisineDto,
-                      Cuisine: Models.CuisinesModel = Models.CuisinesModel()):
+                      Cuisine = None):
+    if Cuisine is None:
+        Cuisine = Models.CuisinesModel()
     if cuisine.cuisine is None:
         return None
     Cuisine.cuisine = cuisine.cuisine.lower()
@@ -61,12 +68,12 @@ def CuisineDtoToModel(cuisine: Dtos.CuisineDto,
 def NumberChecker(quantity: str):
     numbers = []
     try: 
-        int(str)
+        int(quantity)
         numbers.append(unit_numbers[0])
     except: 
         pass
     try:
-        float(str)
+        float(quantity)
         numbers.append(unit_numbers[1])
     except:
         pass
