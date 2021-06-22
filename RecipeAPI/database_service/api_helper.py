@@ -35,9 +35,8 @@ def AddUnit(unit: Dtos.UnitDto):
         if Unit is None:
             raise w_exc.BadRequest()
         session = db.Add(Unit, session)
-        try: 
+        try:
             session.commit()
-            return
         except exc.SQLAlchemyError as e:
             print(e)
             session.rollback()
@@ -55,7 +54,6 @@ def AddUnits(units: Dtos.UnitsDto):
         session = db.AddAll(AllUnits, session)
         try: 
             session.commit()
-            return
         except exc.SQLAlchemyError as e:
             print(e)
             session.rollback()
@@ -70,7 +68,6 @@ def UpdateUnit(unit: Dtos.UnitDto, id: int):
         Unit = conv.UnitDtoToModel(unit, Unit)
         try:
             session.commit()
-            return
         except exc.SQLAlchemyError as e:
             print(e)
             session.rollback()
@@ -85,7 +82,6 @@ def DeleteUnit(id: int):
         try:
             session.delete(Unit)
             session.commit()
-            return
         except exc.SQLAlchemyError as e:
             print(e)
             session.rollback()
@@ -324,20 +320,20 @@ def RecipeDtoToModelAndAdd(recipe: Dtos.RecipeDto, id: int = None):
         Recipe.recipe_desc = recipe.recipe_desc
         Cuisine = session.query(Models.CuisinesModel).filter_by(cuisine=recipe.recipe_cuisine).first()
         if Cuisine is None:
-            raise w_exc.Conflict()
+            raise w_exc.BadRequest()
         Recipe.cuisine = Cuisine
         for ingredient in recipe.ingredient_list:
             Quantity = Models.QuantitiesModel()
             Quantity.ingredient = session.query(Models.IngredientsModel).\
                 filter_by(ingredient=ingredient.ingredient).first()
             if Quantity.ingredient is None:
-                raise w_exc.Conflict()
+                raise w_exc.BadRequest()
             Quantity.unit = session.query(Models.UnitsModel).filter_by(unit=ingredient.unit).first()
             if Quantity.unit is None:
-                raise w_exc.Conflict()
+                raise w_exc.BadRequest()
             numbers = conv.NumberChecker(ingredient.quantity)
             if Quantity.unit.number not in numbers:
-                raise w_exc.Conflict()
+                raise w_exc.BadRequest()
             Quantity.quantity = ingredient.quantity
             Recipe.quantities.append(Quantity)
         count = 1

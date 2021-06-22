@@ -12,7 +12,6 @@ def start_database():
     Session = sessionmaker(bind=engine)
     return Session
 
-
 def Add(entry, session):
     session.add(entry)
     return session
