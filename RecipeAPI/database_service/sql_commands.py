@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, select, func
+from sqlalchemy import create_engine, select, func, desc
 from sqlalchemy.orm import sessionmaker
 import database_service.base
 from database_service.base import Base
@@ -40,7 +40,7 @@ def GetRecipeWithArguments(filters: dict, session):
                .join(IngredientsModel)\
                .filter(IngredientsModel.ingredient.in_(value))\
                .group_by(RecipeInfoModel.id)\
-               .order_by(func.count(IngredientsModel.id))
+               .order_by(desc(func.count(IngredientsModel.id)))
         elif key == "recipe_cuisine":
             statement = statement.join(CuisinesModel)\
                 .filter(CuisinesModel.cuisine.in_(value))
