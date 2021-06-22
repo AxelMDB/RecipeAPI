@@ -1,4 +1,6 @@
 # RecipeAPI
+#### Video Demo:  <URL HERE>
+#### Description:
 
 This is a final project for CS50. It consists of a web API programmed in python using flask, the extension flask-restful, jsons and SQLAlchemy. It's meant for storing, manipulating and retrieving culinary recipes as well as the units, ingredients, and cuisines.
 
