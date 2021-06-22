@@ -7,7 +7,6 @@ import database_service.api_helper as helper
 
 ingredients_parser = reqparse.RequestParser()
 ingredients_parser.add_argument('ingredient', type=str, action='append')
-ingredients_parser.add_argument('description', type=str, action='append')
 
 
 class IngredientsAPI(Resource):
