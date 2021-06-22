@@ -20,4 +20,4 @@ the main endpoints are:
 * <b>/api/recipes</b>: all the recipes, GET supports optional parameters: *recipe_name*, *ingredient*, *recipe_cuisine*
 * <b>/api/SI_Units</b>: a few units in the International System of Units
 
-all of them support HTTP GET, POST, UPDATE, and DELETE (the last two with /<int:id>), except <b>/api/SI_Units</b>, which only supports GET
+all of them support HTTP GET, POST, UPDATE, and DELETE (the last two with /id), except <b>/api/SI_Units</b>, which only supports GET
